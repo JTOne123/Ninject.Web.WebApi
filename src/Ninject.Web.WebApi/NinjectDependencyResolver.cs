@@ -23,20 +23,21 @@ namespace Ninject.Web.WebApi
 {
     using System.Web.Http.Dependencies;
 
-    using Ninject.Syntax;
-
     /// <summary>
     /// Dependency resolver implementation for ninject.
     /// </summary>
     public class NinjectDependencyResolver : NinjectDependencyScope, IDependencyResolver
     {
+        private readonly IKernel kernel;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Ninject.Web.WebApi.NinjectDependencyResolver"/> class.
         /// </summary>
-        /// <param name="resolutionRoot">The resolution root.</param>
-        public NinjectDependencyResolver(IResolutionRoot resolutionRoot)
-            : base(resolutionRoot)
+        /// <param name="kernel">The kernel.</param>
+        public NinjectDependencyResolver(IKernel kernel)
+            : base(kernel.BeginBlock())
         {
+            this.kernel = kernel;
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Ninject.Web.WebApi
         /// <returns>The new scope</returns>
         public virtual IDependencyScope BeginScope()
         {
-            return this;
+            return new NinjectDependencyScope(this.kernel.BeginBlock());
         }
     }
 }

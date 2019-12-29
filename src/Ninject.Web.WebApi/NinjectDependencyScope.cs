@@ -26,32 +26,24 @@ namespace Ninject.Web.WebApi
     using System.Linq;
     using System.Web.Http.Dependencies;
 
+    using Ninject.Activation.Blocks;
     using Ninject.Infrastructure.Disposal;
     using Ninject.Parameters;
-    using Ninject.Syntax;
 
     /// <summary>
     /// Dependency Scope implementation for ninject
     /// </summary>
     public class NinjectDependencyScope : DisposableObject, IDependencyScope
     {
+        private readonly IActivationBlock activationBlock;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NinjectDependencyScope"/> class.
         /// </summary>
-        /// <param name="resolutionRoot">The resolution root.</param>
-        public NinjectDependencyScope(IResolutionRoot resolutionRoot)
+        /// <param name="activationBlock">The activation block.</param>
+        public NinjectDependencyScope(IActivationBlock activationBlock)
         {
-            this.ResolutionRoot = resolutionRoot;
-        }
-
-        /// <summary>
-        /// Gets the resolution root.
-        /// </summary>
-        /// <value>The resolution root.</value>
-        protected IResolutionRoot ResolutionRoot
-        {
-            get;
-            private set;
+            this.activationBlock = activationBlock;
         }
 
         /// <summary>
@@ -61,8 +53,8 @@ namespace Ninject.Web.WebApi
         /// <returns>The service instance or <see langword="null"/> if none is configured.</returns>
         public object GetService(Type serviceType)
         {
-            var request = this.ResolutionRoot.CreateRequest(serviceType, null, new Parameter[0], true, true);
-            return this.ResolutionRoot.Resolve(request).SingleOrDefault();
+            var request = this.activationBlock.CreateRequest(serviceType, null, new Parameter[0], true, true);
+            return this.activationBlock.Resolve(request).SingleOrDefault();
         }
 
         /// <summary>
@@ -72,7 +64,17 @@ namespace Ninject.Web.WebApi
         /// <returns>All service instances or an empty enumerable if none is configured.</returns>
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            return this.ResolutionRoot.GetAll(serviceType).ToList();
+            return this.activationBlock.GetAll(serviceType).ToList();
+        }
+
+        /// <summary>
+        /// Releases resources held by the object.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> if called manually, otherwise by GC.</param>
+        public override void Dispose(bool disposing)
+        {
+            this.activationBlock.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

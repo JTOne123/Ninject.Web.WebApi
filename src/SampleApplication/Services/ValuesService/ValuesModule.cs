@@ -22,7 +22,6 @@
 namespace SampleApplication.Services.ValuesService
 {
     using Ninject.Modules;
-    using Ninject.Web.Common;
 
     /// <summary>
     /// Module for the values provider
@@ -34,7 +33,7 @@ namespace SampleApplication.Services.ValuesService
         /// </summary>
         public override void Load()
         {
-            this.Bind<IValuesProvider>().To<ValuesProvider>().InRequestScope();
+            this.Bind<IValuesProvider>().To<ValuesProvider>();
         }
     }
 }

@@ -23,7 +23,6 @@ namespace Ninject.Web.WebApi.Selfhost
 {
     using System;
     using System.Web.Http;
-    using System.Web.Http.Dependencies;
     using System.Web.Http.SelfHost;
 
     using Ninject.Modules;
@@ -53,11 +52,6 @@ namespace Ninject.Web.WebApi.Selfhost
             {
                 throw new InvalidOperationException("This module requires Ninject.Web.WebAPI extension");
             }
-
-            this.Rebind<IDependencyResolver>().To<NinjectSelfHostDependencyResolver>();
-
-            this.Kernel.Components.RemoveAll<IWebApiRequestScopeProvider>();
-            this.Kernel.Components.Add<IWebApiRequestScopeProvider, SelfHostWebApiRequestScopeProvider>();
         }
     }
 }

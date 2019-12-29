@@ -23,7 +23,6 @@ namespace Ninject.Web.WebApi.OwinHost
 {
     using System;
     using System.Web.Http;
-    using System.Web.Http.Dependencies;
 
     using Ninject.Modules;
 
@@ -65,11 +64,6 @@ namespace Ninject.Web.WebApi.OwinHost
             {
                 throw new InvalidOperationException("This module requires Ninject.Web.WebAPI extension");
             }
-
-            this.Rebind<IDependencyResolver>().To<OwinNinjectDependencyResolver>();
-
-            this.Kernel.Components.RemoveAll<IWebApiRequestScopeProvider>();
-            this.Kernel.Components.Add<IWebApiRequestScopeProvider, OwinWebApiRequestScopeProvider>();
         }
     }
 }
